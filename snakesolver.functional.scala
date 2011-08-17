@@ -6,18 +6,7 @@ object Main {
     )
     val exit_after_first_solution = true
 
-    val dimm1 = dim - 1
     val dimp1 = dim + 1
-    val dimp2 = dim + 2
-    val dimp2sq = dimp2 * dimp2
-    val dimp2cb = dimp2 * dimp2 * dimp2
-
-    val slen= dim * dim * dim
-
-    def xyz2n(x: Int, y: Int, z: Int) = z * dimp2sq + y * dimp2 + x
-    def n2x(n: Int) = n % dimp2
-    def n2y(n: Int) = (n / dimp2) % dimp2
-    def n2z(n: Int) = (n / dimp2sq) % dimp2
 
     def buildSnake(snake: List[Tuple2[Int, Int]]):List[Int]=
         if (snake.isEmpty) Nil
@@ -43,7 +32,7 @@ object Main {
         )
     )
 
-    var tries: Int = 0
+    var tries = 0
 
     def get_cube(result: Seq[Seq[Seq[Int]]]) = {
         (1 to dim).map( z =>
@@ -52,10 +41,13 @@ object Main {
 
             (1 to dim).map( y =>
                 "\t|" +
+
                 (1 to dim).map( x =>
                     " %2d |".format(result(x)(y)(z))
                 ).reduce( (a, b) => a + b) +
+
                 "\t|" +
+
                 (1 to dim).map( x =>
                     " " +
                     (if (result(x)(y)(z) < 0) "?" else if (snake(result(x)(y)(z)) == 1) "X" else " ") +
