@@ -81,8 +81,8 @@ object Main1 {
 
                 for (x <- List.range(1, dimp1)) {
                     val n= xyz2n(x, y, z)
-                    // r += String.format(" %2d |", Array(result(n)))
-                    r += " " + result(n) + " |"
+                    r += " %2d |".format(result(n))
+                    // r += " " + result(n) + " |"
                 }
 
                 r += "\t|"
@@ -93,9 +93,9 @@ object Main1 {
                 }
 
                 r += "\n"
+                r += "\t+----+----+----+----+"
+                r += "\t+---+---+---+---+\n"
             }
-            r += "\t+----+----+----+----+"
-            r += "\t+---+---+---+---+\n"
         }
         r += "\n"
         r

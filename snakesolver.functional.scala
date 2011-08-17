@@ -1,4 +1,4 @@
-object Main1 {
+object Main {
 
     val dim = 4
     val snake_short = List(
@@ -82,7 +82,7 @@ object Main1 {
         if (exit_after_first_solution) System.exit(1)
     }
 
-    def solve(positions: Seq[Tuple3[Int, Int, Int]], visited: Set[Tuple3[Int, Int, Int]]): Seq[Seq[Tuple3[Int, Int, Int]]] = {
+    def solve(positions: Seq[Tuple3[Int, Int, Int]], visited: Set[Tuple3[Int, Int, Int]]): Unit = {
 
         val xyz= positions.last
 
@@ -90,13 +90,13 @@ object Main1 {
 //            print("Positions: " + positions + "\n")
 //            print("Visited: " + visited + "\n")
             print_solved(positions)
-            return(Seq(positions))
+            return
         }
 
         val expect= expected(xyz._1)(xyz._2)(xyz._3)
         if (expect != 0 && expect != snake(positions.length - 1)) {
 //            print("color doesn't match: " + expect + " vs " + snake(positions.length - 1) + " at " + positions.length + "\n")
-            return(Seq())
+            return
         }
 
         tries += 1;
@@ -108,20 +108,8 @@ object Main1 {
             map(add => ( xyz._1 + add._1, xyz._2 + add._2, xyz._3 + add._3) ).
             filter( xyz => !visited.contains(xyz) ).
             map( xyz => solve(positions :+ xyz, visited + xyz) )
-        Seq()
     }
 
-/*
-print_solved(
-    (1 to dim).map(
-        x => (1 to dim).map(
-            y => (1 to dim).map(
-                z => Seq((x, y, z))
-            ).reduce((a, b) => a ++ b)
-        ).reduce((a, b) => a ++ b)
-    ).reduce((a, b) => a ++ b)
-)
-*/
     def main(args: Array[String]): Unit = {
         (1 to dim).map(
             x => (1 to dim).map(
