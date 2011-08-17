@@ -1,6 +1,6 @@
 
 in seconds              perl5   luajit  perl6   python  scala   scala-f node.js c
 
-Conan/Dietrich:         60      1.6     ?       50      24              2.5     0.75
+Conan/Dietrich:         60      1.6     ?       50      24              2.5     0.64
 
-Stepmobil/Steppicrew:   56.3    14.75   ?       47.5    4.7     34
+Stepmobil/Steppicrew:   56.3    14.75   ?       47.5    4.7     34              0.58
