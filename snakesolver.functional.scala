@@ -25,14 +25,6 @@ object Main1 {
 
     val snake = buildSnake(snake_short)
 
-    val result= (0 to dimp1).map(
-        x => (0 to dimp1).map(
-            y => (0 to dimp1).map(
-                z => if (List(x, y, z).exists( i => i == 0 || i == dimp1)) -1 else -2
-            )
-        )
-    )
-
     val visited= (0 to dimp1).map(
         x => (0 to dimp1).map(
             y => (0 to dimp1).map(
@@ -53,7 +45,7 @@ object Main1 {
 
     var tries: Int = 0
 
-    def get_cube = {
+    def get_cube(result: Seq[Seq[Seq[Int]]]) = {
         (1 to dim).map( z =>
             "z=" + z + "\n" +
             "\t+----+----+----+----+\t+---+---+---+---+\n" +
@@ -66,69 +58,82 @@ object Main1 {
                 "\t|" +
                 (1 to dim).map( x =>
                     " " +
-                    (if (result(x)(y)(z) == -2) "?" else if (snake(result(x)(y)(z)) == 1) "X" else " ") +
+                    (if (result(x)(y)(z) < 0) "?" else if (snake(result(x)(y)(z)) == 1) "X" else " ") +
                     " |"
                 ).reduce( (a, b) => a + b) +
-                "\n"
-            ).reduce( (a, b) => a + b) +
-            "\t+----+----+----+----+\t+---+---+---+---+\n"
+                "\n\t+----+----+----+----+\t+---+---+---+---+\n"
+            ).reduce( (a, b) => a + b)
         ).reduce( (a, b) => a + b) +
         "\n"
     }
 
-    def print_cube = {
-        print( get_cube )
-    }
-
-    def print_solved {
+    def print_solved(positions: Seq[Tuple3[Int,Int,Int]]) {
         print( "\n\nSOLVED with " + tries + " tries\n" )
-        print_cube
+        print( get_cube(
+            (0 to dimp1).map(
+                x => (0 to dimp1).map(
+                    y => (0 to dimp1).map(
+                        z => positions.indexOf((x, y, z))
+                    )
+                )
+            )
+        ) )
 
         if (exit_after_first_solution) System.exit(1)
     }
 
-    def solve(xyz: Tuple3[Int, Int, Int], positions: Seq[Tuple3[Int, Int, Int]], visited: Set[Tuple3[Int, Int, Int]]): Seq[Seq[Tuple3[Int, Int, Int]]] = {
+    def solve(positions: Seq[Tuple3[Int, Int, Int]], visited: Set[Tuple3[Int, Int, Int]]): Seq[Seq[Tuple3[Int, Int, Int]]] = {
+
+        val xyz= positions.last
 
         if (positions.length == snake.length) {
-            print_solved
+//            print("Positions: " + positions + "\n")
+//            print("Visited: " + visited + "\n")
+            print_solved(positions)
             return(Seq(positions))
         }
 
         val expect= expected(xyz._1)(xyz._2)(xyz._3)
-        if (expect != 0 && expect != snake(positions.length)) {
-//            print("color doesn't match: " + expect + " vs " + snake(positions.length) + " at " + positions.length + "\n")
+        if (expect != 0 && expect != snake(positions.length - 1)) {
+//            print("color doesn't match: " + expect + " vs " + snake(positions.length - 1) + " at " + positions.length + "\n")
             return(Seq())
         }
 
         tries += 1;
-        if (tries % 300000 == 0)
-            println( "tries: " + tries + " " + xyz + " -> idx: " + snake(positions.length))
+        if (tries % 300000 == 0) {
+            println( "tries: " + tries + " " + xyz + " -> idx: " + positions.length + " (" + snake(positions.length) + ")")
+        }
 
         Seq((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)).
             map(add => ( xyz._1 + add._1, xyz._2 + add._2, xyz._3 + add._3) ).
             filter( xyz => !visited.contains(xyz) ).
-            map( _xyz => solve(_xyz, positions :+ xyz, visited + xyz) ).
-            filter( s => !s.isEmpty )/*.
-            reduce( (a, b) => a ++: b ) :+ positions
-*/
-        return(Seq())
+            map( xyz => solve(positions :+ xyz, visited + xyz) )
+        Seq()
     }
-    
+
 /*
-    def solve = {
-        while (offset < slen) {
-            if (offset > 0) {
-//                 snake= snake.tail ::: List(snake.head)
-                 print( "\nstarting over (" + offset + ")\n" )
-            }
-            offset += 1
-            find_way(xyz2n(1, 1, 1), 0, -1, false)
-        }
-    }
+print_solved(
+    (1 to dim).map(
+        x => (1 to dim).map(
+            y => (1 to dim).map(
+                z => Seq((x, y, z))
+            ).reduce((a, b) => a ++ b)
+        ).reduce((a, b) => a ++ b)
+    ).reduce((a, b) => a ++ b)
+)
 */
-    
     def main(args: Array[String]): Unit = {
-        solve((1, 1, 1), Seq(), visited)
+        (1 to dim).map(
+            x => (1 to dim).map(
+                y => (1 to dim).map(
+                    z => {
+                        val xyz= (x, y, z)
+                        print("Starting at " + xyz + "\n")
+                        solve(Seq(xyz), visited + xyz)
+                    }
+                )
+            )
+        )
     }
 
 }
