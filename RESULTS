@@ -1,0 +1,6 @@
+
+in seconds              perl5   luajit  perl6   python  scala   node.js
+
+Conan/Dietrich:         60      1.6     ?       50      24      2.5
+
+Stepmobil/Steppicrew:   56.3    14.75   ?       47.5    6.1
